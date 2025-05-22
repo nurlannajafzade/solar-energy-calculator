@@ -1,0 +1,95 @@
+!pip install gradio
+
+import gradio as gr
+
+# Constants
+PANEL_EFFICIENCY = 0.18  # 18% efficiency
+PERFORMANCE_RATIO = 0.75  # system losses
+DAYS_IN_YEAR = 365
+
+def estimate_irradiance(lat: float) -> float:
+    lat = abs(lat)
+    if lat < 15:
+        return 6.0
+    elif lat < 25:
+        return 5.5
+    elif lat < 35:
+        return 5.0
+    elif lat < 45:
+        return 4.5
+    elif lat < 60:
+        return 4.0
+    else:
+        return 3.5
+
+def calculate_energy_output(panel_area: float, lat: float, tilt_angle: float = None) -> float:
+    irradiance = estimate_irradiance(lat)
+    daily_output = irradiance * panel_area * PANEL_EFFICIENCY * PERFORMANCE_RATIO
+    annual_output = daily_output * DAYS_IN_YEAR
+    return round(annual_output, 2)
+
+def calculate(lat, area, tilt):
+    tilt_val = float(tilt) if tilt else None
+    output = calculate_energy_output(panel_area=float(area), lat=float(lat), tilt_angle=tilt_val)
+    return f"Estimated Annual Energy Output: {output} kWh"
+
+iface = gr.Interface(
+    fn=calculate,
+    inputs=[
+        gr.Textbox(label="Latitude (°)", value="30"),
+        gr.Textbox(label="Panel Area (m²)", value="20"),
+        gr.Textbox(label="Tilt Angle (°) - Optional", value="")
+    ],
+    outputs="text",
+    title="Solar Energy Calculator",
+    description="Enter latitude, panel area, and optional tilt angle to estimate annual solar energy output."
+)
+
+if __name__ == "__main__":
+    iface.launch()
+
+# Constants
+PANEL_EFFICIENCY = 0.18  # 18% efficiency
+PERFORMANCE_RATIO = 0.75  # system losses
+DAYS_IN_YEAR = 365
+
+def estimate_irradiance(lat: float) -> float:
+    lat = abs(lat)
+    if lat < 15:
+        return 6.0
+    elif lat < 25:
+        return 5.5
+    elif lat < 35:
+        return 5.0
+    elif lat < 45:
+        return 4.5
+    elif lat < 60:
+        return 4.0
+    else:
+        return 3.5
+
+def calculate_energy_output(panel_area: float, lat: float, tilt_angle: float = None) -> float:
+    irradiance = estimate_irradiance(lat)
+    daily_output = irradiance * panel_area * PANEL_EFFICIENCY * PERFORMANCE_RATIO
+    annual_output = daily_output * DAYS_IN_YEAR
+    return round(annual_output, 2)
+
+def calculate(lat, area, tilt):
+    tilt_val = float(tilt) if tilt else None
+    output = calculate_energy_output(panel_area=float(area), lat=float(lat), tilt_angle=tilt_val)
+    return f"Estimated Annual Energy Output: {output} kWh"
+
+iface = gr.Interface(
+    fn=calculate,
+    inputs=[
+        gr.Textbox(label="Latitude (°)", value="30"),
+        gr.Textbox(label="Panel Area (m²)", value="20"),
+        gr.Textbox(label="Tilt Angle (°) - Optional", value="")
+    ],
+    outputs="text",
+    title="Solar Energy Calculator",
+    description="Enter latitude, panel area, and optional tilt angle to estimate annual solar energy output."
+)
+
+if __name__ == "__main__":
+    iface.launch()
